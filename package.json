@@ -32,9 +32,9 @@
     "start": "electron .",
     "dev": "next dev -H ecovoit_front.com",
     "next": "next dev",
-    "electron": "wait-on http://ecovoit_front:3000 && electron .",
+    "electron": "wait-on https://admin.ecovoit.tech && electron .",
     "build": "next build",
-    "electron-buil": "electron-builder"
+    "electron-build": "electron-builder"
   },
   "dependencies": {
     "@emotion/cache": "^11.6.0",

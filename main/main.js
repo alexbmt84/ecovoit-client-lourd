@@ -16,7 +16,7 @@ function createWindow() {
   });
 
   // Charge l'URL de votre front-end Next.js
-  mainWindow.loadURL('http://ecovoit_front.com:3000').catch((err) => {
+  mainWindow.loadURL('https://admin.ecovoit.tech').catch((err) => {
     console.error('Failed to load URL:', err);
   });
 
