@@ -15,9 +15,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16.11.11'
       - name: Install dependencies
         run: npm install
+      - name: Build the Electron app
+        run: npm run build
       - name: Package the Electron app
         run: npm run electron-build
 
@@ -30,7 +32,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16.11.11'
       - name: Install dependencies
         run: npm install
       - name: Package the app
