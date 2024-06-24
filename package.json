@@ -86,7 +86,8 @@
       "category": "carpooling"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "/public/images/logos/logo_512.png"
     },
     "linux": {
       "target": "AppImage"
