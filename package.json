@@ -2,7 +2,7 @@
   "name": "ecovoit-admin",
   "description": "Ecovoit Admin Panel",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "main/main.js",
   "author": {
     "name": "ThemeSelection",
@@ -134,7 +134,8 @@
       "icon": "/public/images/logos/logo_512.png"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "/public/images/logos/logo_512.png"
     }
   }
 }
