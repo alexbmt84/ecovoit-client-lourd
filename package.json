@@ -2,7 +2,7 @@
   "name": "ecovoit-admin",
   "description": "Ecovoit Admin Panel",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "main": "main/main.js",
   "author": {
     "name": "ThemeSelection",
@@ -127,7 +127,8 @@
     },
     "appId": "com.ecovoit",
     "mac": {
-      "category": "carpooling"
+      "category": "public.app-category.utilities",
+      "icon": "public/images/logos/logo_512.png"
     },
     "win": {
       "target": "nsis",
@@ -135,7 +136,7 @@
     },
     "linux": {
       "target": "AppImage",
-      "icon": "/public/images/logos/logo_512.png"
+      "icon": "public/images/logos/logo_512.png"
     }
   }
 }
