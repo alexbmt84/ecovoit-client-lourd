@@ -44,7 +44,7 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({theme}) => ({
 // @ts-ignore
 const TabAccount = ({data}) => {
   // ** State
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
+  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/avatar.png')
   const onChange = (file: ChangeEvent) => {
     const reader = new FileReader()
     const {files} = file.target as HTMLInputElement

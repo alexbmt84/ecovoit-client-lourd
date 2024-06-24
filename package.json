@@ -34,7 +34,46 @@
     "next": "next dev",
     "electron": "wait-on https://admin.ecovoit.tech && electron .",
     "build": "next build",
-    "electron-build": "electron-builder"
+    "electron-build": "electron-builder",
+    "find:unused": "next-unused"
+  },
+  "next-unused": {
+    "alias": {},
+    "include": [
+      "main",
+      "src",
+      "@core",
+      "components",
+      "context",
+      "hooks",
+      "layouts",
+      "libs",
+      "theme",
+      "utils",
+      "pages",
+      "configs",
+      "navigation",
+      "views",
+      "styles"
+    ],
+    "exclude": [],
+    "entrypoints": [
+      "main",
+      "src",
+      "@core",
+      "components",
+      "context",
+      "hooks",
+      "layouts",
+      "libs",
+      "theme",
+      "utils",
+      "pages",
+      "configs",
+      "navigation",
+      "views",
+      "styles"
+    ]
   },
   "dependencies": {
     "@emotion/cache": "^11.6.0",
@@ -50,6 +89,7 @@
     "electron-serve": "^2.0.0",
     "mdi-material-ui": "^7.1.0",
     "next": "12.0.4",
+    "next-unused": "^0.0.6",
     "node-fetch": "^3.3.2",
     "nprogress": "^0.2.0",
     "react": "17.0.2",
