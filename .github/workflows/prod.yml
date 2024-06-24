@@ -22,6 +22,8 @@ jobs:
         run: npm run build
       - name: Package the Electron app
         run: npm run electron-build
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   release:
     needs: build
