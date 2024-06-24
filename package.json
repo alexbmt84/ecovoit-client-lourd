@@ -35,6 +35,7 @@
     "electron": "wait-on https://admin.ecovoit.tech && electron .",
     "build": "next build",
     "electron-build": "electron-builder",
+    "publish": "electron-builder --publish onTagOrDraft",
     "find:unused": "next-unused"
   },
   "next-unused": {
@@ -121,6 +122,9 @@
     "wait-on": "^7.2.0"
   },
   "build": {
+    "publish": {
+      "provider": "github"
+    },
     "appId": "com.ecovoit",
     "mac": {
       "category": "carpooling"
