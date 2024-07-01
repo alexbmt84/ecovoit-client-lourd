@@ -34,8 +34,6 @@ const UserDropdown = () => {
 
   const {userData, loading} = useUser();
 
-  console.log(userData);
-
   // ** States
 
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)

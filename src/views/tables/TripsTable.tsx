@@ -11,6 +11,7 @@ import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import axios from "axios";
 import {SpinnerWheel} from "../../@core/components/loaders/spinner-wheel";
+import {VehicleType} from "./CarsTable";
 
 export interface TripsType {
   id: React.Key | null | undefined;
@@ -19,6 +20,7 @@ export interface TripsType {
   distance: number;
   status: number;
   departure_time: string;
+  vehicle: VehicleType;
   vehicle_id: number;
   started_at: string;
   ended_at: string;
@@ -132,7 +134,7 @@ const TripsTable = () => {
                     })
                   }
                 </TableCell>
-                <TableCell align='center'>{trip.vehicle_id}</TableCell>
+                <TableCell align='center'>{trip.vehicle.model}</TableCell>
                 {trip.started_at ? (
                   <TableCell align='center'>  {
                     new Date(trip.started_at).toLocaleDateString("fr", {

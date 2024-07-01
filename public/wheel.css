@@ -48,6 +48,10 @@
   width: 100%;
 }
 
+.update-profile-label {
+  margin-top: 25px;
+}
+
 .loader {
   overflow: hidden;
   position: relative;
