@@ -1,5 +1,7 @@
 // ** React Imports
-import {useState, ElementType, ChangeEvent} from 'react'
+import {useState, ElementType, ChangeEvent, useEffect, SetStateAction} from 'react'
+import useCSRFToken from "../../@core/hooks/useCsrf";
+import {useRouter} from "next/router";
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -9,13 +11,13 @@ import {styled} from '@mui/material/styles'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import Button, {ButtonProps} from '@mui/material/Button'
 
 // ** Icons Imports
 import {SpinnerWheel} from "../../@core/components/loaders/spinner-wheel";
+import axios from "axios";
 
 const ImgStyled = styled('img')(({theme}) => ({
   width: 120,
@@ -43,8 +45,97 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({theme}) => ({
 
 // @ts-ignore
 const TabAccount = ({data}) => {
-  // ** State
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/avatar.png')
+
+  useCSRFToken();
+
+  const apiUrl = "https://api.ecovoit.tech";
+  const csrfToken = typeof window !== 'undefined' ? localStorage.getItem('csrfToken') : null;
+  const router = useRouter();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState(0);
+  const [status, setStatus] = useState(0);
+  const [statusValue, setStatusDefaultValue] = useState("");
+  const [establishment, setEstablishment] = useState(0);
+  const [establishmentValue, setEstablishmentDefaultValue] = useState("")
+  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/avatar.png');
+  const [roleValue, setRoleDefaultValue] = useState("");
+
+  useEffect(() => {
+    if (data) {
+      if (data.email) {
+        setEmail(data.email)
+      }
+      if (data.first_name) {
+        setFirstName(data.first_name)
+      }
+      if (data.last_name) {
+        setLastName(data.last_name)
+      }
+      if (data.role_id) {
+        setRole(data.role_id)
+        if (data.role_id === 1) {
+          setRoleDefaultValue("1");
+        } else if (data.role_id === 2) {
+          setRoleDefaultValue("2")
+        } else {
+          setRoleDefaultValue("3")
+        }
+      }
+
+      setStatus(data.active_status)
+      if (data.active_status === 0) {
+        setStatusDefaultValue("0")
+      } else {
+        setStatusDefaultValue("1")
+      }
+
+      if (data.establishment_id) {
+        setEstablishment(data.establishment_id)
+        if (data.establishment_id === 1) {
+          setEstablishmentDefaultValue("1")
+        } else {
+          setEstablishmentDefaultValue("2")
+        }
+      }
+    }
+  }, [data]);
+
+  const handleRoleChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+    setRoleDefaultValue(event.target.value);
+    if (typeof event.target.value === "string") {
+      setRole(parseInt(event.target.value, 10));
+    }
+  };
+
+  const handleEstablishmentChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+    setEstablishmentDefaultValue(event.target.value);
+    if (typeof event.target.value === "string") {
+      setEstablishment(parseInt(event.target.value, 10));
+    }
+  };
+
+  const handleStatusChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+    setStatusDefaultValue(event.target.value);
+    console.log(statusValue, status)
+    if (typeof event.target.value === "string") {
+      setStatus(parseInt(event.target.value, 10));
+    }
+  };
+
+  const getToken = () => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('access_token');
+    }
+
+    return null;
+
+  };
+
+  const token = getToken();
+
   const onChange = (file: ChangeEvent) => {
     const reader = new FileReader()
     const {files} = file.target as HTMLInputElement
@@ -55,6 +146,70 @@ const TabAccount = ({data}) => {
     }
   }
 
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+
+    const update = async () => {
+
+
+      if (!token) {
+
+        await router.push('/pages/login');
+
+        return;
+
+      }
+
+      try {
+        const response = await axios.put(`${apiUrl}/api/users/${data.id}`, {
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          role_id: role,
+          active_status: status,
+          establishment_id: establishment
+        }, {
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        console.log('Update Successful:', response.data);
+        alert('User updated successfully');
+
+      } catch (error: any) {
+
+        console.error('Failed to update user:', error);
+
+        if (error.response) {
+
+          console.error('Error data:', error.response.data);
+          console.error('Error status:', error.response.status);
+          console.error('Error headers:', error.response.headers);
+
+          alert(`Failed to update user: ${error.response.status} ${error.response.data.message}`);
+
+        } else if (error.request) {
+
+          console.error('Error request:', error.request);
+          alert('No response from the server');
+
+        } else {
+
+          console.error('Error message:', error.message);
+          alert('Error while setting up the request');
+
+        }
+
+      }
+
+    };
+
+    await update();
+
+  };
+
   if (!data) {
     return (
       <SpinnerWheel/>
@@ -63,11 +218,15 @@ const TabAccount = ({data}) => {
 
   return (
     <CardContent>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{marginTop: 4.8, marginBottom: 3}}>
             <Box sx={{display: 'flex', alignItems: 'center'}}>
-              <ImgStyled src={`/images/avatars/${data.avatar}`} alt='Profile Pic'/>
+              {data.avatar !== "avatar.png" ? (
+                <ImgStyled src={`/images/avatars/${data.avatar}`} alt='Profile Pic'/>
+              ) : (
+                <ImgStyled src={imgSrc} alt='Profile Pic'/>
+              )}
               <Box>
                 <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
                   Upload New Photo
@@ -91,49 +250,93 @@ const TabAccount = ({data}) => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='First Name' placeholder={data.first_name} defaultValue={data.first_name}/>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Last Name' placeholder={data.last_name} defaultValue={data.last_name}/>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+            <label>First name</label>
             <TextField
               fullWidth
+              id="first_name"
+              value={firstName}
+              onChange={e => setFirstName(e.target.value)}
+              type='text'
+              placeholder={data.first_name}
+              name={"first_name"}
+              required={true}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <label>Last name</label>
+            <TextField
+              fullWidth
+              id="last_name"
+              value={lastName}
+              onChange={e => setLastName(e.target.value)}
+              type='text'
+              placeholder={data.last_name}
+              name={"last_name"}
+              required={true}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <label>Email</label>
+            <TextField
+              fullWidth
+              id="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               type='email'
-              label='Email'
               placeholder={data.email}
-              defaultValue={data.email}
+              name={"email"}
+              required={true}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel>Role</InputLabel>
-              <Select label='Role' defaultValue='admin'>
-                <MenuItem value='admin'>Admin</MenuItem>
-                <MenuItem value='author'>Moderator</MenuItem>
-                <MenuItem value='editor'>User</MenuItem>
-              </Select>
+              <label>Role</label>
+              {roleValue ? (
+                <Select
+                  value={roleValue}
+                  onChange={handleRoleChange}
+                  displayEmpty
+                >
+                  <MenuItem value='1'>Admin</MenuItem>
+                  <MenuItem value='2'>Moderator</MenuItem>
+                  <MenuItem value='3'>User</MenuItem>
+                </Select>
+              ) : (
+                <div></div>
+              )}
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select label='Status' defaultValue='active'>
-                <MenuItem value='active'>Active</MenuItem>
-                <MenuItem value='inactive'>Inactive</MenuItem>
+              <label>Status</label>
+              <Select
+                value={statusValue}
+                onChange={handleStatusChange}
+              >
+                <MenuItem value='0'>Active</MenuItem>
+                <MenuItem value='1'>Inactive</MenuItem>
               </Select>
             </FormControl>
+            <div></div>
           </Grid>
           <Grid item xs={12} sm={6}>
-            {data.establishment_id === 1 ? (
-              <TextField fullWidth label='Establishment' placeholder='Nextech Avignon' defaultValue='Nextech Avignon' />
-            ):(
-              <TextField fullWidth label='Establishment' placeholder='Nextech Pertuis' defaultValue='Nextech Pertuis' />
+            {establishmentValue ? (
+              <FormControl fullWidth>
+                <label>Establishment</label>
+                <Select
+                  value={establishmentValue}
+                  onChange={handleEstablishmentChange}
+                >
+                  <MenuItem value='1'>Nextech Avignon</MenuItem>
+                  <MenuItem value='2'>Nextech Pertuis</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              <div></div>
             )}
           </Grid>
-
           <Grid item xs={12}>
-            <Button variant='contained' sx={{marginRight: 3.5}}>
+            <Button variant='contained' sx={{marginRight: 3.5}} type={"submit"}>
               Save Changes
             </Button>
             <Button type='reset' variant='outlined' color='secondary'>
