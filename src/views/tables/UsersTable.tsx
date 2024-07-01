@@ -38,6 +38,7 @@ export interface UserType {
   deleted_at: string;
 }
 
+// @ts-ignore
 const EditUserDialog = React.memo(({open, onClose, user, onSave}) => {
   const [localUser, setLocalUser] = useState(user);
 
@@ -45,8 +46,8 @@ const EditUserDialog = React.memo(({open, onClose, user, onSave}) => {
     setLocalUser(user);
   }, [user]);
 
-  const handleChange = (e) => {
-    setLocalUser(prev => ({...prev, [e.target.name]: e.target.value}));
+  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+    setLocalUser((prev: any) => ({...prev, [e.target.name]: e.target.value}));
   };
 
   return (
@@ -107,7 +108,6 @@ const EditUserDialog = React.memo(({open, onClose, user, onSave}) => {
 const CarsTable = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);
   const [users, setUsers] = useState<UserType[]>([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
@@ -129,7 +129,7 @@ const CarsTable = () => {
 
   const token = getToken();
 
-  const fetchUsers = async (page) => {
+  const fetchUsers = async (page: number) => {
     const token = sessionStorage.getItem('access_token');
     if (!token) {
       await router.push('/pages/login');
@@ -256,6 +256,7 @@ const CarsTable = () => {
     )
   }
 
+  // @ts-ignore
   // @ts-ignore
   return (
     <>
