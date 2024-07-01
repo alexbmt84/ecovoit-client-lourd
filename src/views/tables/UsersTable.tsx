@@ -258,6 +258,8 @@ const CarsTable = () => {
 
   // @ts-ignore
   // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
   return (
     <>
       <TableContainer component={Paper}>
