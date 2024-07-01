@@ -23,6 +23,13 @@ import Button from '@mui/material/Button';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {useDeleteEntity} from "../../@core/hooks/useDeleteEntity";
 
+interface EditUserDialogProps {
+  open: boolean;
+  onClose: () => void;
+  user: UserType | null;
+  onSave: (user: UserType | null) => Promise<void>;
+}
+
 export interface UserType {
   id: number;
   first_name: string;
@@ -39,9 +46,8 @@ export interface UserType {
 }
 
 // @ts-ignore
-const EditUserDialog = React.memo(({open, onClose, user, onSave}) => {
-  const [localUser, setLocalUser] = useState(user);
-
+const EditUserDialog: React.FC<EditUserDialogProps> = ({ open, onClose, user, onSave }) => {
+const [localUser, setLocalUser] = useState<UserType | null>(user);
   useEffect(() => {
     setLocalUser(user);
   }, [user]);
@@ -103,7 +109,7 @@ const EditUserDialog = React.memo(({open, onClose, user, onSave}) => {
       </DialogActions>
     </Dialog>
   );
-});
+};
 
 const CarsTable = () => {
   const router = useRouter();
@@ -257,9 +263,6 @@ const CarsTable = () => {
   }
 
   // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
   return (
     <>
       <TableContainer component={Paper}>
@@ -350,7 +353,6 @@ const CarsTable = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDelete}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>Delete</Button>
         </DialogActions>
       </Dialog>
     </>
