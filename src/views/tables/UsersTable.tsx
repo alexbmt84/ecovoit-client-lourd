@@ -111,7 +111,7 @@ const [localUser, setLocalUser] = useState<UserType | null>(user);
   );
 };
 
-const CarsTable = () => {
+const UsersTable = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<UserType[]>([]);
@@ -183,7 +183,7 @@ const CarsTable = () => {
 
     const confirmation = window.confirm("Are you sure you want to delete this user?");
     if (confirmation) {
-      const success = await handleDelete(user); // Pass the user directly
+      const success = await handleDelete(user, "users");
       if (success) {
         setUsers(currentUsers => currentUsers.filter(u => u.id !== userId));
       } else {
@@ -208,6 +208,7 @@ const CarsTable = () => {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
+        phone_number: user.phone_number,
         role_id: user.role_id,
         active_status: user.active_status,
         establishment_id: user.establishment_id,
@@ -293,8 +294,8 @@ const CarsTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user, index) => (
-                <TableRow key={index}>
+              {users.map((user) => (
+                <TableRow key={user.id}>
                   <TableCell component="th" scope="row">
                     {user.first_name}
                   </TableCell>
@@ -359,4 +360,4 @@ const CarsTable = () => {
   );
 };
 
-export default CarsTable
+export default UsersTable;

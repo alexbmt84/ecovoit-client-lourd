@@ -15,11 +15,11 @@ const useDeleteEntity = () => {
     setOpenDelete(false);
   };
 
-  const handleDelete = async (user: { id: any; }) => {
-    if (user && user.id) {
+  const handleDelete = async (entity: { id: any; }, path: string) => {
+    if (entity && entity.id) {
       try {
         const token = sessionStorage.getItem('access_token');
-        const response = await axios.delete(`https://api.ecovoit.tech/api/users/${user.id}`, {
+        const response = await axios.delete(`https://api.ecovoit.tech/api/${path}/${entity.id}`, {
           headers: {'Authorization': `Bearer ${token}`}
         });
         console.log('Deletion successful:', response);
